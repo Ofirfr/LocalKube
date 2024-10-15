@@ -10,7 +10,7 @@ spec:
     chart: kube-prometheus-stack
     targetRevision: 65.2.0
     helm:
-      releaseName: prometheus
+      releaseName: prometheus-grafana-stack
       valueFiles:
         - grafana-values.yaml
     path: .
