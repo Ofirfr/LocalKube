@@ -1,0 +1,33 @@
+apiVersion: postgres.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: first-postgres-cluster-app-one
+  namespace: first
+spec:
+  instances: 3
+  storage:
+    size: 500Mi
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "200Mi"
+    limits:
+      cpu: "200m"
+      memory: "200Mi"
+  bootstrap:
+    strategy: initdb
+    user:
+      name: ofirfr
+      password: ofir123
+    database: ofirdb
+  # Define storage for each instance separately
+  instance:
+    - name: first-postgres-cluster-app-one-0
+      storage:
+        className: sc-node1
+    - name: first-postgres-cluster-app-one-1
+      storage:
+        className: sc-node2
+    - name: first-postgres-cluster-app-one-2
+      storage:
+        className: sc-node3
