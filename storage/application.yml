@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: storage-classes
-  namespace: argocd
+  namespace: storage
 spec:
   project: default
   source:
