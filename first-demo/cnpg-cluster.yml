@@ -14,9 +14,3 @@ spec:
     limits:
       cpu: "200m"
       memory: "200Mi"
-  bootstrap:
-    strategy: initdb
-    user:
-      name: ofirfr
-      password: ofir123
-    database: ofirdb
