@@ -9,7 +9,7 @@ spec:
     - repoURL: "https://github.com/Ofirfr/LocalKube.git"
       targetRevision: HEAD
       ref: local-kube-repo
-    - repoURL: "https://github.com/cloudnative-pg.git"
+    - repoURL: "https://github.com/cloudnative-pg/cloudnative-pg.git"
       targetRevision: HEAD
       ref: cnpg-repo
     - repoURL: https://prometheus-community.github.io/helm-charts
