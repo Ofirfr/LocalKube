@@ -34,9 +34,3 @@ nodes:
   - role: worker
   - role: worker
   - role: worker
-
-networking:
-  apiServerAddress: "0.0.0.0"
-  apiServerPort: 6443
-  disableDefaultCNI: false
-  kubeProxyMode: "iptables"
