@@ -7,6 +7,5 @@ volumeBindingMode: WaitForFirstConsumer
 allowedTopologies:
   - matchLabelExpressions:
       - key: kubernetes.io/hostname
-        operator: In
         values:
           - kind-worker
