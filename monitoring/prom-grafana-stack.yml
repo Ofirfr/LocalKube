@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: prom-grafana-stack
-  namespace: monitoring
+  namespace: argocd
 spec:
   project: default
   sources:
