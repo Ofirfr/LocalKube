@@ -20,14 +20,3 @@ spec:
       name: ofirfr
       password: ofir123
     database: ofirdb
-  # Define storage for each instance separately
-  instance:
-    - name: first-postgres-cluster-app-one-0
-      storage:
-        className: sc-node1
-    - name: first-postgres-cluster-app-one-1
-      storage:
-        className: sc-node2
-    - name: first-postgres-cluster-app-one-2
-      storage:
-        className: sc-node3
