@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: monitoring
+  name: storage
   namespace: argocd
 spec:
   generators:
@@ -9,7 +9,7 @@ spec:
         repoURL: https://github.com/Ofirfr/LocalKube.git
         revision: HEAD
         directories:
-          - path: monitoring
+          - path: storage
   template:
     metadata:
       name: "{{path.basename}}"
