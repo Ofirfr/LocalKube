@@ -2,7 +2,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: first-postgres-cluster-app-one
-  namespace: argocd
+  namespace: first-demo
 spec:
   instances: 3
   storage:
