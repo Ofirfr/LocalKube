@@ -19,7 +19,7 @@ spec:
           - name: grafana.service.type
             value: NodePort
           - name: grafana.service.nodePort
-            value: "30009"
+            value: "30001"
           - name: grafana.service.port
             value: "80"
           - name: grafana.service.targetPort
