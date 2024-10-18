@@ -20,6 +20,7 @@ spec:
         valueFiles:
           # - values.yaml
           - $cnpg-repo/docs/src/samples/monitoring/kube-stack-config.yaml
+          - $local-kube-repo/monitoring/test123.yaml
           - $local-kube-repo/monitoring/grafana-node-port-values.yaml
   destination:
     server: https://kubernetes.default.svc
