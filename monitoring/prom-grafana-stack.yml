@@ -16,11 +16,19 @@ spec:
       chart: kube-prometheus-stack
       targetRevision: 65.2.0
       helm:
+        parameters:
+          - name: service.type
+            value: NodePort
+          - name: service.nodePort
+            value: "30009"
+          - name: service.port
+            value: "80"
+          - name: service.targetPort
+            value: "3000"
         releaseName: prometheus-grafana-stack
         valueFiles:
           - $cnpg-repo/docs/src/samples/monitoring/kube-stack-config.yaml
-          - $local-kube-repo/monitoring/test123.yaml
-          # - $local-kube-repo/monitoring/grafana-node-port-values.yaml
+
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
