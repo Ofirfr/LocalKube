@@ -2,6 +2,8 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: prom-grafana-stack
+  annotations:
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
   namespace: argocd
 spec:
   project: default
