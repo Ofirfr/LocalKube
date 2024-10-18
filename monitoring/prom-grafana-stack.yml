@@ -6,9 +6,6 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: "https://github.com/Ofirfr/LocalKube.git"
-      targetRevision: HEAD
-      ref: local-kube-repo
     - repoURL: "https://github.com/cloudnative-pg/cloudnative-pg.git"
       targetRevision: HEAD
       ref: cnpg-repo
