@@ -4,12 +4,14 @@ metadata:
   name: first-demo-cnpg-clusters-application-set
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
     - git:
         repoURL: "https://github.com/Ofirfr/LocalKube.git"
         revision: HEAD
         directories:
-          - path: first-demo
+          - path: first-demo/cnpg-clusters
   template:
     metadata:
       name: "{{metadata.name}}"
