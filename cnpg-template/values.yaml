@@ -4,6 +4,7 @@ cluster:
   name: default-cnpg-cluster
   namespace: default
   instances: 3
+  monitor: true
 
 resources:
   storage: "1Gi"
