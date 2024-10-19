@@ -19,7 +19,7 @@ spec:
       project: default
       source:
         repoURL: "https://github.com/Ofirfr/LocalKube.git"
-        targetRevision: main
+        targetRevision: 0.1.0
         chart: cnpg-cluster
         helm:
           parameters:
