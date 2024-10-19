@@ -11,7 +11,7 @@ spec:
         repoURL: "https://github.com/Ofirfr/LocalKube.git"
         revision: HEAD
         files:
-          - path: first-demo/cnpg-clusters/**/config.json
+          - path: first-demo/postgres/cnpg-clusters/**/config.json
   template:
     metadata:
       name: "{{ .dba.metadata.name }}"
@@ -22,16 +22,16 @@ spec:
         targetRevision: HEAD
         chart: cnpg-cluster
         helm:
-        parameters:
-          - name: cluster.instances
-            value: {{ .app.replicas }}
-        releaseName: {{ .dba.metadata.name }}
+          parameters:
+            - name: cluster.instances
+              value: "{{ .app.replicas }}"
+          releaseName: "{{ .dba.metadata.name }}"
         path: first-demo/postgres/cnpg-template
         directory:
           recurse: true
       destination:
         server: https://kubernetes.default.svc
-        namespace: {{ .dba.metadata.namespace }}
+        namespace: "{{ .dba.metadata.namespace }}"
       syncPolicy:
         automated:
           prune: true
