@@ -6,6 +6,9 @@
         "metadata": {
             "name": "best-app-pdb",
             "namespace": "best-app"
+        },
+        "helm": {
+            "revision": "0.0.11"
         }
     }
 }
