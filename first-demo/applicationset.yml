@@ -18,7 +18,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: "https://github.com/Ofirfr/LocalKube.git"
+        repoURL: "https://ofirfr.github.io/LocalKube"
         targetRevision: 0.1.1
         chart: cnpg-cluster
         helm:
@@ -26,7 +26,6 @@ spec:
             - name: cluster.instances
               value: "{{ .app.replicas }}"
           releaseName: "{{ .dba.metadata.name }}"
-        path: first-demo/postgres/cnpg-template
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{ .dba.metadata.namespace }}"
