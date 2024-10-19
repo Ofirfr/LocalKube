@@ -9,7 +9,7 @@ spec:
         repoURL: "https://github.com/Ofirfr/LocalKube.git"
         revision: HEAD
         directories:
-          - path: first-demo/cnpg-clusters
+          - path: first-demo
   template:
     metadata:
       name: "{{metadata.name}}"
