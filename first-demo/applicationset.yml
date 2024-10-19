@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: first-demo-cnpg-clusters
+spec:
+  generators:
+    - git:
+        repoURL: "https://github.com/Ofirfr/LocalKube.git"
+        revision: HEAD
+        directories:
+          - path: first-demo/cnpg-clusters
+  template:
+    metadata:
+      name: "{{metadata.name}}"
+    spec:
+      project: default
+      source:
+        repoURL: "https://github.com/Ofirfr/LocalKube.git"
+        targetRevision: HEAD
+        path: first-demo/cnpg-clusters
+        directory:
+          recurse: true
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: first-demo
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

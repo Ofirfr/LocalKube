@@ -1,6 +1,0 @@
-grafana:
-  service:
-    type: NodePort
-    nodePort: 30001
-    port: 80
-    targetPort: 3000
