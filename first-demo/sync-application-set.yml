@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: "https://github.com/Ofirfr/LocalKube.git"
     targetRevision: HEAD
-    path: first-demo/applicationset.yml
+    path: first-demo/app-set/
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
