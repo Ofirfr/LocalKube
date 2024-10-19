@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: "https://github.com/Ofirfr/LocalKube.git"
     targetRevision: HEAD
-    path: first-demo
+    path: first-demo/cnpg-clusters
   destination:
     server: https://kubernetes.default.svc
     namespace: first-demo
