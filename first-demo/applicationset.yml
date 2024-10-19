@@ -11,7 +11,7 @@ spec:
         repoURL: "https://github.com/Ofirfr/LocalKube.git"
         revision: HEAD
         files:
-          - path: first-demo/postgres/cnpg-clusters/**/config.json
+          - path: first-demo/cnpg-clusters/**/config.json
   template:
     metadata:
       name: "{{ .dba.metadata.name }}"
