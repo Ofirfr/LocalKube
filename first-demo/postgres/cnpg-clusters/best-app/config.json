@@ -1,0 +1,11 @@
+{
+    "app": {
+        "replicas": 3
+    },
+    "dba": {
+        "metadata": {
+            "name": "best-app-pdb",
+            "namespace": "best-app"
+        }
+    }
+}

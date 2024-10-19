@@ -1,0 +1,16 @@
+# Default cluster values
+
+cluster:
+  name: default-cnpg-cluster
+  namespace: default
+  instances: 3
+
+resources:
+  storage: "1Gi"
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
