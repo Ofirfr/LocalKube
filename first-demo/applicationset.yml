@@ -18,9 +18,9 @@ spec:
     spec:
       project: default
       source:
-        repoURL: "https://ofirfr.github.io/LocalKube"
-        targetRevision: 0.1.2
-        chart: cnpg-cluster
+        repoURL: "https://cloudnative-pg.github.io/charts"
+        targetRevision: 0.0.11
+        chart: cluster
         helm:
           parameters:
             - name: cluster.instances
@@ -29,6 +29,10 @@ spec:
               value: "{{ .dba.metadata.name }}"
             - name: cluster.namespace
               value: "{{ .dba.metadata.namespace }}"
+            - name: cluster.monitoring.enabled
+              value: "true"
+            - name: cluster.monitoring.podMonitor.enabled
+              value: "true"  
           releaseName: "{{ .dba.metadata.name }}-cnpg-cluster"
       destination:
         server: https://kubernetes.default.svc
