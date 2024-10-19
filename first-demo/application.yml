@@ -1,20 +1,20 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: first-demo
-#   namespace: argocd
-# spec:
-#   project: default
-#   source:
-#     repoURL: "https://github.com/Ofirfr/LocalKube.git"
-#     targetRevision: HEAD
-#     path: first-demo
-#   destination:
-#     server: https://kubernetes.default.svc
-#     namespace: first-demo
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: first-demo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/Ofirfr/LocalKube.git"
+    targetRevision: HEAD
+    path: first-demo
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: first-demo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
