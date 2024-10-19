@@ -19,7 +19,7 @@ spec:
       project: default
       source:
         repoURL: "https://cloudnative-pg.github.io/charts"
-        targetRevision: "{{dig ".dba.helm.revision" "" .}}"
+        targetRevision: "{{ or .dba.helm.revision "0.0.11" }}"
         chart: cluster
         helm:
           parameters:
