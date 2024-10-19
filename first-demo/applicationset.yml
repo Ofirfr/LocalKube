@@ -26,7 +26,9 @@ spec:
             - name: cluster.instances
               value: "{{ .app.replicas }}"
             - name: cluster.name
-              value: "{{ .app.replicas }}"
+              value: "{{ .dba.metadata.name }}"
+            - name: cluster.namespace
+              value: "{{ .dba.metadata.namespace }}"
           releaseName: "{{ .dba.metadata.name }}-cnpg-cluster"
       destination:
         server: https://kubernetes.default.svc
