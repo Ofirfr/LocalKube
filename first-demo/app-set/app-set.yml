@@ -24,7 +24,7 @@ spec:
         helm:
           # Parameters from the specific values file will override
           valueFiles:
-            - values.yml
+            - values.yaml
             - "{{ .path.path }}/cluster-specific-values.yml"
           # This will always override anything in valuesFiles
           parameters:
