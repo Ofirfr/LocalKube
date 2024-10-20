@@ -17,22 +17,25 @@ spec:
       name: "{{ .dba.metadata.name }}"
     spec:
       project: default
-      source:
-        repoURL: "https://cloudnative-pg.github.io/charts"
-        targetRevision: "{{ .dba.helm.revision }}"
-        chart: cluster
-        helm:
-          # Parameters from the specific values file will override
-          valueFiles:
-            - values.yaml
-            - "{{ .path.path }}/cluster-specific-values.yml"
-          # This will always override anything in valuesFiles
-          parameters:
-            - name: cluster.name
-              value: "{{ .dba.metadata.name }}"
-            - name: cluster.namespace
-              value: "{{ .dba.metadata.namespace }}"
-          releaseName: "{{ .dba.metadata.name }}-cnpg-cluster"
+      sources:
+        - repoURL: "https://github.com/Ofirfr/LocalKube.git"
+          targetRevision: HEAD
+          ref: git-repo
+        - repoURL: "https://cloudnative-pg.github.io/charts"
+          targetRevision: "{{ .dba.helm.revision }}"
+          chart: cluster
+          helm:
+            # Parameters from the specific values file will override
+            valueFiles:
+              - values.yaml
+              - "$git-repo{{ .path.path }}/cluster-specific-values.yml"
+            # This will always override anything in valuesFiles
+            parameters:
+              - name: cluster.name
+                value: "{{ .dba.metadata.name }}"
+              - name: cluster.namespace
+                value: "{{ .dba.metadata.namespace }}"
+            releaseName: "{{ .dba.metadata.name }}-cnpg-cluster"
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{ .dba.metadata.namespace }}"
