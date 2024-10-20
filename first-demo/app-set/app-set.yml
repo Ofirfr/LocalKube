@@ -28,7 +28,7 @@ spec:
             # Parameters from the specific values file will override
             valueFiles:
               - values.yaml
-              - "$git-repo{{ .path.path }}/cluster-specific-values.yml"
+              - "$git-repo/{{ .path.path }}/cluster-specific-values.yml"
             # This will always override anything in valuesFiles
             parameters:
               - name: cluster.name
