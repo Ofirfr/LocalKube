@@ -22,17 +22,16 @@ spec:
         targetRevision: "{{ .dba.helm.revision }}"
         chart: cluster
         helm:
+          # Parameters from the specific values file will override
+          valueFiles:
+            - values.yml
+            - "{{ .path.path }}/cluster-specific-values.yml"
+          # This will always override anything in valuesFiles
           parameters:
-            - name: cluster.instances
-              value: "{{ .app.replicas }}"
             - name: cluster.name
               value: "{{ .dba.metadata.name }}"
             - name: cluster.namespace
               value: "{{ .dba.metadata.namespace }}"
-            - name: cluster.monitoring.enabled
-              value: "true"
-            - name: cluster.monitoring.podMonitor.enabled
-              value: "true"  
           releaseName: "{{ .dba.metadata.name }}-cnpg-cluster"
       destination:
         server: https://kubernetes.default.svc

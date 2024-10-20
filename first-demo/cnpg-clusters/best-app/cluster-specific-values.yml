@@ -1,0 +1,6 @@
+cluster:
+  instances: 3      
+  monitoring:
+    enabled: true
+    podMonitor:
+      enabled: true      
