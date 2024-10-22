@@ -1,0 +1,14 @@
+cluster:
+  instances: 3      
+  monitoring:
+    enabled: true
+    podMonitor:
+      enabled: true 
+
+  resources:
+    requests:
+      memory: "32Mi"
+      cpu: "10m"
+    limits:
+      memory: "32Mi"
+      cpu: "10m"
