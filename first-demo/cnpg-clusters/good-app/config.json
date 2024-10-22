@@ -1,7 +1,4 @@
 {
-    "app": {
-        "replicas": 2
-    },
     "dba": {
         "metadata": {
             "name": "good-app-pdb",

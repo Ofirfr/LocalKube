@@ -4,6 +4,7 @@ cluster:
     enabled: true
     podMonitor:
       enabled: true 
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.0
 
   resources:
     requests:
