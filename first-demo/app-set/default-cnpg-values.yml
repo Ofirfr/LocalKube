@@ -17,7 +17,7 @@ cluster:
   affinity:
     enablePodAntiAffinity: true
     topologyKey: kubernetes.io/hostname
-    podAntiAffinityType: required
+    podAntiAffinityType: preferred
     nodeSelector:
       node-role.kubernetes.io/postgres: ""
     tolerations:
