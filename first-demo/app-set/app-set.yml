@@ -27,7 +27,7 @@ spec:
           helm:
             # Parameters from the specific values file will override
             valueFiles:
-              - values.yaml
+              - "$git-repo/first-demo/app-set/default-cnpg-values.yml"
               - "$git-repo/{{ .path.path }}/cluster-specific-values.yml"
             # This will always override anything in valuesFiles
             parameters:
