@@ -4,8 +4,7 @@ spec:
   bootstrap:
     initdb:
       import:
-        type: microservice
-        schemaOnly: false
+        type: monolith
         databases:
           - ofirdb
         source:
