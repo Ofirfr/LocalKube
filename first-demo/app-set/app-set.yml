@@ -21,9 +21,9 @@ spec:
         - repoURL: "https://github.com/Ofirfr/LocalKube.git"
           targetRevision: HEAD
           ref: git-repo
-        - repoURL: "https://cloudnative-pg.github.io/charts"
+        - repoURL: "https://ofirfr.github.io/LocalKube/"
           targetRevision: "{{ .dba.helm.revision }}"
-          chart: cluster
+          chart: cnpg-cluster
           helm:
             # Parameters from the specific values file will override
             valueFiles:
