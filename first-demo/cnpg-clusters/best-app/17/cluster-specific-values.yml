@@ -7,15 +7,15 @@ cluster:
         type: microservice
         schemaOnly: true
         databases:
-          - app
+          - ofirdb
         source:
           externalCluster: best-app-pdb-14
   externalClusters:
   - name: best-app-pdb-14
     connectionParameters:
-      host: best-app-pdb-14
+      host: best-app-pdb-14-cnpg-cluster-rw
       user: postgres
-      dbname: app
+      dbname: ofirdb
     password:
       name: best-app-pdb-14-cnpg-cluster-superuser
       key: password
