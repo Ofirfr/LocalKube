@@ -11,6 +11,7 @@ spec:
         repoURL: "https://github.com/Ofirfr/LocalKube.git"
         revision: HEAD
         files:
+        # Change it to your path
           - path: first-demo/cnpg-clusters/**/config.json
   template:
     metadata:
@@ -18,9 +19,11 @@ spec:
     spec:
       project: default
       sources:
+      # This is needed for Argo to read the specific-values file
         - repoURL: "https://github.com/Ofirfr/LocalKube.git"
           targetRevision: HEAD
           ref: git-repo
+      # This might (and probably will) be a different repo
         - repoURL: "https://ofirfr.github.io/LocalKube/"
           targetRevision: "{{ .dba.helm.revision }}"
           chart: cnpg-cluster
@@ -29,7 +32,7 @@ spec:
             valueFiles:
               - "$git-repo/first-demo/app-set/default-cnpg-values.yml"
               - "$git-repo/{{ .path.path }}/cluster-specific-values.yml"
-            # This will always override anything in valuesFiles
+            # These will always override anything in valuesFiles
             parameters:
               - name: metadata.name
                 value: "{{ .dba.metadata.name }}"
@@ -43,5 +46,6 @@ spec:
         automated:
           prune: true
           selfHeal: true
+      # You may want to add more sync options
         syncOptions:
           - CreateNamespace=true
