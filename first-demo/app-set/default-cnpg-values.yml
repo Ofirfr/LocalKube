@@ -5,7 +5,8 @@ cluster:
     podMonitor:
       enabled: true 
   imageName: ghcr.io/cloudnative-pg/postgresql:17.0
-
+  storage:
+    size: 5Gi
   resources:
     requests:
       memory: "512Mi"
