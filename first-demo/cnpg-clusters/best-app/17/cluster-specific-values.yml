@@ -13,9 +13,9 @@ spec:
   externalClusters:
   - name: best-app-pdb-14
     connectionParameters:
-      host: best-app-pdb-14-cnpg-cluster-rw
+      host: best-app-pdb-14-rw
       user: postgres
       dbname: postgres
     password:
-      name: best-app-pdb-14-cnpg-cluster-superuser
+      name: best-app-pdb-14-superuser
       key: password
