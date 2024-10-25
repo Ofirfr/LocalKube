@@ -1,4 +1,4 @@
-cluster:
+spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:17.0
   instances: 1
   bootstrap:

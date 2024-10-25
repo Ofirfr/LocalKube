@@ -1,4 +1,4 @@
-cluster:
+spec:
   instances: 2     
   monitoring:
     enabled: true

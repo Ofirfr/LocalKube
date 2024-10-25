@@ -31,9 +31,9 @@ spec:
               - "$git-repo/{{ .path.path }}/cluster-specific-values.yml"
             # This will always override anything in valuesFiles
             parameters:
-              - name: cluster.name
+              - name: metadata.name
                 value: "{{ .dba.metadata.name }}"
-              - name: cluster.namespace
+              - name: metadata.namespace
                 value: "{{ .dba.metadata.namespace }}"
             releaseName: "{{ .dba.metadata.name }}-cnpg-cluster"
       destination:
