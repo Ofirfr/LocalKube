@@ -5,7 +5,7 @@ spec:
     initdb:
       import:
         type: microservice
-        schemaOnly: true
+        schemaOnly: false
         databases:
           - ofirdb
         source:
