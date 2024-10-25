@@ -2,7 +2,16 @@ apiVersion: v1
 entries:
   cnpg-cluster:
   - apiVersion: v2
-    created: "2024-10-19T17:23:47.159560226+03:00"
+    created: "2024-10-25T14:37:42.926700289+03:00"
+    description: A Helm chart for deploying a Cloud Native PostgreSQL cluster
+    digest: a5fa8919736cc8dba6f259be27418ae65e476d583862b6c0174e2007bca6aac9
+    name: cnpg-cluster
+    type: application
+    urls:
+    - cnpg-cluster-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    created: "2024-10-25T14:37:42.926590387+03:00"
     description: A Helm chart for deploying a Cloud Native PostgreSQL cluster
     digest: 98913c78c153453735adbfcaf75f2ab80829f6c3d5f480540ebdecfef12b14c6
     name: cnpg-cluster
@@ -11,7 +20,7 @@ entries:
     - cnpg-cluster-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v2
-    created: "2024-10-19T17:23:47.159157938+03:00"
+    created: "2024-10-25T14:37:42.926485351+03:00"
     description: A Helm chart for deploying a Cloud Native PostgreSQL cluster
     digest: 22d0bfcfc750a7e2af236d13c6f5d130df043839b06e3f54d35b17c63b1fc04d
     name: cnpg-cluster
@@ -20,7 +29,7 @@ entries:
     - cnpg-cluster-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v2
-    created: "2024-10-19T17:23:47.158746511+03:00"
+    created: "2024-10-25T14:37:42.926364675+03:00"
     description: A Helm chart for deploying a Cloud Native PostgreSQL cluster
     digest: 765e0e0d3210d6a5737b37b2e42c36ba01c7339a2c1e48d62cff732893fef895
     name: cnpg-cluster
@@ -28,4 +37,4 @@ entries:
     urls:
     - cnpg-cluster-0.1.0.tgz
     version: 0.1.0
-generated: "2024-10-19T17:23:47.157894387+03:00"
+generated: "2024-10-25T14:37:42.926094235+03:00"
