@@ -1,0 +1,2 @@
+cluster:
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.0

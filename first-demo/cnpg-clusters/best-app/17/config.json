@@ -1,0 +1,11 @@
+{
+    "dba": {
+        "metadata": {
+            "name": "best-app-pdb-17",
+            "namespace": "best-app"
+        },
+        "helm": {
+            "revision": "0.0.11"
+        }
+    }
+}
