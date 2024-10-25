@@ -15,7 +15,7 @@ cluster:
     connectionParameters:
       host: best-app-pdb-14-cnpg-cluster-rw
       user: postgres
-      dbname: ofirdb
+      dbname: postgres
     password:
       name: best-app-pdb-14-cnpg-cluster-superuser
       key: password
