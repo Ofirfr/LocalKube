@@ -1,0 +1,165 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: cnpg-pub-sub-lag-check-
+  namespace: best-app  # Set the namespace for the workflow
+spec:
+  serviceAccountName: argo-service-account
+  entrypoint: pub-sub-lag-check
+  templates:
+    - name: pub-sub-lag-check
+      steps:
+        # Step 1: Fetch databases
+        - - name: fetch-databases
+            template: fetch-databases
+
+        # Step 2: Create publication and subscription in parallel for each database
+        - - name: create-pub-sub
+            template: create-publication-and-subscription
+            arguments:
+              parameters:
+                - name: database
+                  value: "{{item}}"
+            withItems: 
+            - ofirdb
+
+        # Step 3: Check lag for each publication and subscription
+        - - name: check-lag
+            template: check-lag
+            arguments:
+              parameters:
+                - name: database
+                  value: "{{item}}"
+            withItems: 
+            - ofirdb
+
+        # Step 4: Manual approval step
+        - - name: approval
+            template: manual-approval
+        
+        - - name: sync-sequences
+            arguments:
+              parameters:
+                - name: database
+                  value: "{{item}}"
+            withItems: 
+            - ofirdb
+            template: sync-sequences
+
+        - - name: drop-replications
+            template: drop-replications
+            arguments:
+              parameters:
+                - name: database
+                  value: "{{item}}"
+            withItems: 
+            - ofirdb
+
+    # Template to fetch databases
+    - name: fetch-databases
+      script:
+        image: ofirfr/psql:latest # Or compatible image with PostgreSQL client tools
+        command: [sh]
+        source: |
+          PGPASSWORD=${POSTGRES_PASSWORD}
+          export PGPASSWORD
+          databases=$(psql -U ${POSTGRES_USER} -h ${POSTGRES_HOST} -p ${POSTGRES_PORT} -t -c "SELECT datname FROM pg_database WHERE datistemplate = false;")
+          echo $databases | jq -R -s -c 'split("\n")[:-1]' > /tmp/databases.json # Outputs as JSON array
+        env:
+          - name: POSTGRES_USER
+            value: "postgres"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: best-app-pdb-14-superuser
+                key: password
+          - name: POSTGRES_HOST
+            value: "best-app-pdb-14-rw"
+          - name: POSTGRES_PORT
+            value: "5432"
+      outputs:
+        parameters:
+          - name: result
+            valueFrom:
+              path: /tmp/databases.json
+
+    # Template to create publication and subscription
+    - name: create-publication-and-subscription
+      inputs:
+        parameters:
+          - name: database
+      container:
+        image: ofirfr/kubectl-cnpg:latest # Image for CloudNativePG kubectl commands
+        command: [sh, -c]
+        args:
+          - |
+            kubectl cnpg publication create best-app-pdb-17   --external-cluster best-app-pdb-14 --publication migration --all-tables --dbname "{{inputs.parameters.database}}"       
+            kubectl cnpg subscription create best-app-pdb-17 --external-cluster best-app-pdb-14 --publication migration --subscription migration --dbname "{{inputs.parameters.database}}"
+
+    # Template to check lag
+    - name: check-lag
+      inputs:
+        parameters:
+          - name: database
+      retryStrategy:
+        limit: 10
+        backoff:
+          duration: "30s"
+          factor: 2
+      script:
+        env:
+          - name: POSTGRES_USER
+            value: "postgres"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: best-app-pdb-14-superuser
+                key: password
+          - name: POSTGRES_HOST
+            value: "best-app-pdb-14-rw"
+          - name: POSTGRES_PORT
+            value: "5432"
+        image: ofirfr/psql:latest
+        command: [sh, -c]
+        source: |
+          PGPASSWORD=${POSTGRES_PASSWORD}
+          export PGPASSWORD
+          while true; do
+            lag=$(psql -U ${POSTGRES_USER} -h ${POSTGRES_HOST} -p ${POSTGRES_PORT} -t -c "SELECT ((sent_lsn::text::pg_lsn - write_lsn::text::pg_lsn) / (pg_size_bytes(current_setting('wal_segment_size'))::int)) AS replication_lag_seconds FROM pg_stat_replication order by replication_lag_seconds limit 1;")
+            lag_int=$(echo "$lag * 1000" | cut -d'.' -f1)  
+
+            if [ "$lag_int" -lt 2000 ]; then
+                echo "Lag is less than 2 seconds for database {{inputs.parameters.database}}"
+                exit 0
+            else
+                echo "Waiting for lag to drop below 2 seconds for database {{inputs.parameters.database}} (current lag: $lag)"
+                sleep 30
+            fi
+          done
+
+    # Manual approval step
+    - name: manual-approval
+      suspend: {}
+
+    - name: sync-sequences
+      inputs:
+        parameters:
+          - name: database
+      container:
+        image: ofirfr/kubectl-cnpg:latest # Image for CloudNativePG kubectl commands
+        command: [sh, -c]
+        args:
+          - |
+            kubectl cnpg subscription sync-sequences --subscription migration best-app-pdb-17 --dbname {{inputs.parameters.database}}
+
+    - name: drop-replications
+      inputs:
+        parameters:
+          - name: database
+      container:
+        image: ofirfr/kubectl-cnpg:latest # Image for CloudNativePG kubectl commands
+        command: [sh, -c]
+        args:
+          - |
+            kubectl cnpg  publication drop --external-cluster best-app-pdb-14 best-app-pdb-17 --publication migration --dbname {{inputs.parameters.database}}     
+            kubectl cnpg subscription drop best-app-pdb-17 --subscription migration --dbname {{inputs.parameters.database}}
