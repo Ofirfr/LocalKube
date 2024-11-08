@@ -8,6 +8,8 @@ spec:
         schemaOnly: true
         databases:
           - ofirdb
+          - postgres
+          - app
         source:
           externalCluster: best-app-pdb-14
   externalClusters:
