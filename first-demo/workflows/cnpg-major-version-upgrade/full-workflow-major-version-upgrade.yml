@@ -81,8 +81,8 @@ spec:
               parameters:
                 - name: database
                   value: "{{inputs.parameters.database_name}}"
-                - name: dest_service
-                  value: "{{inputs.parameters.dest_service}}"
+                - name: dest_host
+                  value: "{{inputs.parameters.dest_host}}"
             # withParam: "{{steps.fetch-databases.outputs.result}}"
 
         # Step 6: Drop publications and subscriptions for each database
