@@ -22,7 +22,7 @@ spec:
           - name: database_name
           - name: dest_host
       steps:
-      - - name: drop-replications
+        - - name: drop-replications
             template: drop-replications
             arguments:
               parameters:
