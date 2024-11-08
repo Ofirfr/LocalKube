@@ -6,7 +6,7 @@ spec:
       import:
         type: monolith
         databases:
-          - ofirdb
+          - postgres
         source:
           externalCluster: best-app-pdb-14
   externalClusters:
@@ -14,7 +14,7 @@ spec:
     connectionParameters:
       host: best-app-pdb-14-rw
       user: postgres
-      dbname: ofirdb
+      dbname: postgres
     password:
       name: best-app-pdb-14-superuser
       key: password
