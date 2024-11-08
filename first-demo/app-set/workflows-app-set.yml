@@ -8,7 +8,7 @@ spec:
         repoURL: "https://github.com/Ofirfr/LocalKube.git"
         revision: HEAD
         directories:
-          - path: 'first-demo/workflows/*'
+          - path: 'first-demo/workflows'
           - path: 'first-demo/workflows/**'
   template:
     metadata:
