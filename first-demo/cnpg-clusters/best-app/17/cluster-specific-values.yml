@@ -6,7 +6,7 @@ spec:
       import:
         type: monolith
         databases:
-          - postgres
+          - app
         source:
           externalCluster: best-app-pdb-14
   externalClusters:
@@ -14,7 +14,7 @@ spec:
     connectionParameters:
       host: best-app-pdb-14-rw
       user: postgres
-      dbname: postgres
+      dbname: app
     password:
       name: best-app-pdb-14-superuser
       key: password
