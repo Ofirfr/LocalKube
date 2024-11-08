@@ -12,7 +12,7 @@ spec:
           - path: 'first-demo/workflows/**'
   template:
     metadata:
-      name: '{{path.basename}}-app'
+      name: 'workflows-{{path.basename}}'
     spec:
       project: default
       source:
