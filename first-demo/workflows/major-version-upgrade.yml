@@ -140,8 +140,8 @@ spec:
         command: [sh, -c]
         args:
           - |
-            kubectl cnpg publication create {{inputs.parameters.dest_host}} --external-cluster {{inputs.parameters.source_host}} --publication migration-for-db-{{inputs.parameters.database}} --all-tables --dbname {{inputs.parameters.database}}
-            kubectl cnpg subscription create {{inputs.parameters.dest_host}} --external-cluster {{inputs.parameters.source_host}} --publication migration --subscription migration-for-db-{{inputs.parameters.database}} --dbname {{inputs.parameters.database}}
+            kubectl cnpg publication create {{inputs.parameters.dest_host}} --external-cluster {{inputs.parameters.source_host}} --publication migration-for-db-"{{inputs.parameters.database}}" --all-tables --dbname {{inputs.parameters.database}}
+            kubectl cnpg subscription create {{inputs.parameters.dest_host}} --external-cluster {{inputs.parameters.source_host}} --publication migration --subscription migration-for-db-"{{inputs.parameters.database}}" --dbname {{inputs.parameters.database}}
 
     - name: check-lag
       inputs:
