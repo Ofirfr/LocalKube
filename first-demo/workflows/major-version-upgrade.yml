@@ -14,6 +14,8 @@ spec:
         value: "{{workflow.parameters.source_host}}-rw"
       - name: source_superuser
         value: "{{workflow.parameters.source_host}}-superuser"
+      - name: database_name
+        value: "ofirdb"
       - name: dest_host
         value: "best-app-pdb-17"
       - name: dest_service
@@ -27,6 +29,7 @@ spec:
           - name: source_host
           - name: source_service
           - name: source_superuser
+          - name: database_name
           - name: dest_host
           - name: dest_service
           - name: dest_superuser
@@ -47,12 +50,12 @@ spec:
             arguments:
               parameters:
                 - name: database
-                  value: "{{item}}"
+                  value: "{{inputs.parameters.database_name}}"
                 - name: source_host
                   value: "{{inputs.parameters.source_host}}"
                 - name: dest_host
                   value: "{{inputs.parameters.dest_host}}"
-            withParam: "{{steps.fetch-databases.outputs.parameters.result}}"
+            # withParam: "{{steps.fetch-databases.outputs.parameters.result}}"
 
         # Step 3: Check lag for each database
         - - name: check-lag
@@ -60,12 +63,12 @@ spec:
             arguments:
               parameters:
                 - name: database
-                  value: "{{item}}"
+                  value: "{{inputs.parameters.database_name}}"
                 - name: source_service
                   value: "{{inputs.parameters.source_service}}"
                 - name: source_superuser
                   value: "{{inputs.parameters.source_superuser}}"
-            withParam: "{{steps.fetch-databases.outputs.result}}"
+            # withParam: "{{steps.fetch-databases.outputs.result}}"
 
         # Step 4: Manual approval step
         - - name: approval
@@ -77,10 +80,10 @@ spec:
             arguments:
               parameters:
                 - name: database
-                  value: "{{item}}"
+                  value: "{{inputs.parameters.database_name}}"
                 - name: dest_service
                   value: "{{inputs.parameters.dest_service}}"
-            withParam: "{{steps.fetch-databases.outputs.result}}"
+            # withParam: "{{steps.fetch-databases.outputs.result}}"
 
         # Step 6: Drop publications and subscriptions for each database
         - - name: drop-replications
@@ -88,12 +91,12 @@ spec:
             arguments:
               parameters:
                 - name: database
-                  value: "{{item}}"
+                  value: "{{inputs.parameters.database_name}}"
                 - name: source_host
                   value: "{{inputs.parameters.source_host}}"
                 - name: dest_host
                   value: "{{inputs.parameters.dest_host}}"
-            withParam: "{{steps.fetch-databases.outputs.result}}"
+            # withParam: "{{steps.fetch-databases.outputs.result}}"
 
     # Template to fetch databases
     - name: fetch-databases

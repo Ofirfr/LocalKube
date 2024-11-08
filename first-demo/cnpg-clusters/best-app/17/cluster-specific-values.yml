@@ -5,11 +5,8 @@ spec:
     initdb:
       import:
         type: monolith
-        schemaOnly: true
         databases:
           - ofirdb
-          - postgres
-          - app
         source:
           externalCluster: best-app-pdb-14
   externalClusters:
