@@ -167,7 +167,7 @@ spec:
                 name: "{{inputs.parameters.source_superuser}}"
                 key: password
           - name: POSTGRES_HOST
-            value: "{{inputs.parameters.source_service}}-rw"
+            value: "{{inputs.parameters.source_service}}"
           - name: POSTGRES_PORT
             value: "5432"
         image: ofirfr/psql:latest
