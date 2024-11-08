@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: cnpg-drop-pub-and-sub
+  namespace: best-app
+spec:
+  serviceAccountName: argo-service-account
+  entrypoint: cnpg-drop-pub-and-sub
+  arguments:
+    parameters:
+      - name: source_host
+        value: "best-app-pdb-14"
+      - name: database_name
+        value: "app"
+      - name: dest_host
+        value: "best-app-pdb-17"
+  templates:
+    - name: cnpg-drop-pub-and-sub
+      inputs:
+        parameters:
+          - name: source_host
+          - name: database_name
+          - name: dest_host
+      steps:
+      - - name: drop-replications
+            template: drop-replications
+            arguments:
+              parameters:
+                - name: database
+                  value: "{{inputs.parameters.database_name}}"
+                - name: source_host
+                  value: "{{inputs.parameters.source_host}}"
+                - name: dest_host
+                  value: "{{inputs.parameters.dest_host}}"
+            # withParam: "{{steps.fetch-databases.outputs.result}}"
+
+    - name: drop-replications
+      inputs:
+        parameters:
+          - name: database
+          - name: source_host
+          - name: dest_host
+      container:
+        image: ofirfr/kubectl-cnpg:latest
+        command: [sh, -c]
+        args:
+          - |
+            kubectl cnpg publication drop --external-cluster {{inputs.parameters.source_host}} {{inputs.parameters.dest_host}} --publication "{{inputs.parameters.database}}_migration" --dbname {{inputs.parameters.database}}
+            kubectl cnpg subscription drop {{inputs.parameters.dest_host}} --subscription "{{inputs.parameters.database}}_migration" --dbname {{inputs.parameters.database}}
