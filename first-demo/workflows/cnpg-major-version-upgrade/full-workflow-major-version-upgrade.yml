@@ -195,13 +195,13 @@ spec:
       inputs:
         parameters:
           - name: database
-          - name: dest_service
+          - name: dest_host
       container:
         image: ofirfr/kubectl-cnpg:latest
         command: [sh, -c]
         args:
           - |
-            kubectl cnpg subscription sync-sequences --subscription "{{inputs.parameters.database}}_migration" {{inputs.parameters.dest_service}} --dbname {{inputs.parameters.database}}
+            kubectl cnpg subscription sync-sequences --subscription "{{inputs.parameters.database}}_migration" {{inputs.parameters.dest_host}} --dbname {{inputs.parameters.database}}
 
     - name: drop-replications
       inputs:
