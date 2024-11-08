@@ -160,7 +160,7 @@ spec:
       script:
         env:
           - name: POSTGRES_USER
-            value: "{{inputs.parameters.source_superuser}}"
+            value: "postgres"
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
