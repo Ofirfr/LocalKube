@@ -15,7 +15,7 @@ spec:
       - name: source_superuser
         value: "{{workflow.parameters.source_host}}-superuser"
       - name: database_name
-        value: "ofirdb"
+        value: "app"
       - name: dest_host
         value: "best-app-pdb-17"
       - name: dest_service
