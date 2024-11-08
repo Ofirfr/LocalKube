@@ -1,80 +1,126 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Workflow
+kind: WorkflowTemplate
 metadata:
-  generateName: cnpg-pub-sub-lag-check-
-  namespace: best-app  # Set the namespace for the workflow
+  name: sync-cnpg-clusters-logicaly
+  namespace: best-app
 spec:
   serviceAccountName: argo-service-account
-  entrypoint: pub-sub-lag-check
+  entrypoint: sync-cnpg-clusters-logicaly
+  arguments:
+    parameters:
+      - name: source_host
+        value: "best-app-pdb-14"
+      - name: source_service
+        value: "{{workflow.parameters.source_host}}-rw"
+      - name: source_superuser
+        value: "{{workflow.parameters.source_host}}-superuser"
+      - name: dest_host
+        value: "best-app-pdb-17"
+      - name: dest_service
+        value: "{{workflow.parameters.dest_host}}-rw" 
+      - name: dest_superuser
+        value: "{{workflow.parameters.dest_host}}-superuser"
   templates:
-    - name: pub-sub-lag-check
+    - name: sync-cnpg-clusters-logicaly
+      inputs:
+        parameters:
+          - name: source_host
+          - name: source_service
+          - name: source_superuser
+          - name: dest_host
+          - name: dest_service
+          - name: dest_superuser
       steps:
         # Step 1: Fetch databases
         - - name: fetch-databases
             template: fetch-databases
+            arguments:
+              parameters:
+                - name: source_service
+                  value: "{{inputs.parameters.source_service}}"
+                - name: source_superuser
+                  value: "{{inputs.parameters.source_superuser}}"
 
-        # Step 2: Create publication and subscription in parallel for each database
+        # Step 2: Create publication and subscription for each fetched database
         - - name: create-pub-sub
             template: create-publication-and-subscription
             arguments:
               parameters:
                 - name: database
                   value: "{{item}}"
-            withItems: 
-            - ofirdb
+                - name: source_host
+                  value: "{{inputs.parameters.source_host}}"
+                - name: dest_host
+                  value: "{{inputs.parameters.dest_host}}"
+            withParam: "{{steps.fetch-databases.outputs.parameters.result}}"
 
-        # Step 3: Check lag for each publication and subscription
+        # Step 3: Check lag for each database
         - - name: check-lag
             template: check-lag
             arguments:
               parameters:
                 - name: database
                   value: "{{item}}"
-            withItems: 
-            - ofirdb
+                - name: source_service
+                  value: "{{inputs.parameters.source_service}}"
+                - name: source_superuser
+                  value: "{{inputs.parameters.source_superuser}}"
+            withParam: "{{steps.fetch-databases.outputs.result}}"
 
         # Step 4: Manual approval step
         - - name: approval
             template: manual-approval
-        
+
+        # Step 5: Sync sequences for each database
         - - name: sync-sequences
+            template: sync-sequences
             arguments:
               parameters:
                 - name: database
                   value: "{{item}}"
-            withItems: 
-            - ofirdb
-            template: sync-sequences
+                - name: dest_service
+                  value: "{{inputs.parameters.dest_service}}"
+            withParam: "{{steps.fetch-databases.outputs.result}}"
 
+        # Step 6: Drop publications and subscriptions for each database
         - - name: drop-replications
             template: drop-replications
             arguments:
               parameters:
                 - name: database
                   value: "{{item}}"
-            withItems: 
-            - ofirdb
+                - name: source_host
+                  value: "{{inputs.parameters.source_host}}"
+                - name: dest_host
+                  value: "{{inputs.parameters.dest_host}}"
+            withParam: "{{steps.fetch-databases.outputs.result}}"
 
     # Template to fetch databases
     - name: fetch-databases
+      inputs:
+        parameters:
+          - name: source_service
+          - name: source_superuser
       script:
-        image: ofirfr/psql:latest # Or compatible image with PostgreSQL client tools
+        image: ofirfr/psql:latest
         command: [sh]
         source: |
           PGPASSWORD=${POSTGRES_PASSWORD}
           export PGPASSWORD
           databases=$(psql -U ${POSTGRES_USER} -h ${POSTGRES_HOST} -p ${POSTGRES_PORT} -t -c "SELECT datname FROM pg_database WHERE datistemplate = false;")
-          echo $databases | jq -R -s -c 'split("\n")[:-1]' > /tmp/databases.json # Outputs as JSON array
+          json_array=$(echo "$databases" | grep -v '^$' | jq -R -s -c 'split("\n")[:-1]')
+          echo $json_array > /tmp/databases.json
+          cat /tmp/databases.json
         env:
           - name: POSTGRES_USER
             value: "postgres"
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: best-app-pdb-14-superuser
+                name: "{{inputs.parameters.source_superuser}}"
                 key: password
           - name: POSTGRES_HOST
-            value: "best-app-pdb-14-rw"
+            value: "{{inputs.parameters.source_service}}"
           - name: POSTGRES_PORT
             value: "5432"
       outputs:
@@ -83,24 +129,26 @@ spec:
             valueFrom:
               path: /tmp/databases.json
 
-    # Template to create publication and subscription
     - name: create-publication-and-subscription
       inputs:
         parameters:
           - name: database
+          - name: source_host
+          - name: dest_host
       container:
-        image: ofirfr/kubectl-cnpg:latest # Image for CloudNativePG kubectl commands
+        image: ofirfr/kubectl-cnpg:latest
         command: [sh, -c]
         args:
           - |
-            kubectl cnpg publication create best-app-pdb-17   --external-cluster best-app-pdb-14 --publication migration --all-tables --dbname "{{inputs.parameters.database}}"       
-            kubectl cnpg subscription create best-app-pdb-17 --external-cluster best-app-pdb-14 --publication migration --subscription migration --dbname "{{inputs.parameters.database}}"
+            kubectl cnpg publication create {{inputs.parameters.dest_host}} --external-cluster {{inputs.parameters.source_host}} --publication migration-for-db-{{inputs.parameters.database}} --all-tables --dbname {{inputs.parameters.database}}
+            kubectl cnpg subscription create {{inputs.parameters.dest_host}} --external-cluster {{inputs.parameters.source_host}} --publication migration --subscription migration-for-db-{{inputs.parameters.database}} --dbname {{inputs.parameters.database}}
 
-    # Template to check lag
     - name: check-lag
       inputs:
         parameters:
           - name: database
+          - name: source_service
+          - name: source_superuser
       retryStrategy:
         limit: 10
         backoff:
@@ -109,14 +157,14 @@ spec:
       script:
         env:
           - name: POSTGRES_USER
-            value: "postgres"
+            value: "{{inputs.parameters.source_superuser}}"
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: best-app-pdb-14-superuser
+                name: "{{inputs.parameters.source_superuser}}"
                 key: password
           - name: POSTGRES_HOST
-            value: "best-app-pdb-14-rw"
+            value: "{{inputs.parameters.source_service}}-rw"
           - name: POSTGRES_PORT
             value: "5432"
         image: ofirfr/psql:latest
@@ -125,7 +173,7 @@ spec:
           PGPASSWORD=${POSTGRES_PASSWORD}
           export PGPASSWORD
           while true; do
-            lag=$(psql -U ${POSTGRES_USER} -h ${POSTGRES_HOST} -p ${POSTGRES_PORT} -t -c "SELECT ((sent_lsn::text::pg_lsn - write_lsn::text::pg_lsn) / (pg_size_bytes(current_setting('wal_segment_size'))::int)) AS replication_lag_seconds FROM pg_stat_replication order by replication_lag_seconds limit 1;")
+            lag=$(psql -U ${POSTGRES_USER} -h ${POSTGRES_HOST} -p ${POSTGRES_PORT} -t -c "SELECT ((sent_lsn::text::pg_lsn - write_lsn::text::pg_lsn) / (pg_size_bytes(current_setting('wal_segment_size'))::int)) AS replication_lag_seconds FROM pg_stat_replication ORDER BY replication_lag_seconds LIMIT 1;")
             lag_int=$(echo "$lag * 1000" | cut -d'.' -f1)  
 
             if [ "$lag_int" -lt 2000 ]; then
@@ -137,7 +185,6 @@ spec:
             fi
           done
 
-    # Manual approval step
     - name: manual-approval
       suspend: {}
 
@@ -145,21 +192,24 @@ spec:
       inputs:
         parameters:
           - name: database
+          - name: dest_service
       container:
-        image: ofirfr/kubectl-cnpg:latest # Image for CloudNativePG kubectl commands
+        image: ofirfr/kubectl-cnpg:latest
         command: [sh, -c]
         args:
           - |
-            kubectl cnpg subscription sync-sequences --subscription migration best-app-pdb-17 --dbname {{inputs.parameters.database}}
+            kubectl cnpg subscription sync-sequences --subscription migration-for-db-{{inputs.parameters.database}} {{inputs.parameters.dest_service}} --dbname {{inputs.parameters.database}}
 
     - name: drop-replications
       inputs:
         parameters:
           - name: database
+          - name: source_host
+          - name: dest_host
       container:
-        image: ofirfr/kubectl-cnpg:latest # Image for CloudNativePG kubectl commands
+        image: ofirfr/kubectl-cnpg:latest
         command: [sh, -c]
         args:
           - |
-            kubectl cnpg  publication drop --external-cluster best-app-pdb-14 best-app-pdb-17 --publication migration --dbname {{inputs.parameters.database}}     
-            kubectl cnpg subscription drop best-app-pdb-17 --subscription migration --dbname {{inputs.parameters.database}}
+            kubectl cnpg publication drop --external-cluster {{inputs.parameters.source_host}} {{inputs.parameters.dest_host}} --publication migration-for-db-{{inputs.parameters.database}} --dbname {{inputs.parameters.database}}
+            kubectl cnpg subscription drop {{inputs.parameters.dest_host}} --subscription migration-for-db-{{inputs.parameters.database}} --dbname {{inputs.parameters.database}}
