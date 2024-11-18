@@ -26,7 +26,7 @@ spec:
 
   backup:
     barmanObjectStore:
-      destinationPath: "dba-cnpg-backups"
+      destinationPath: "s3://dba-cnpg-backups"
       endpointURL: "http://minio.minio-tenant.svc.cluster.local:80"
       s3Credentials:
         accessKeyId:
