@@ -23,3 +23,15 @@ spec:
     - key: node-role.kubernetes.io/postgres
       operator: Exists
       effect: NoSchedule
+
+  backup:
+    barmanObjectStore:
+      destinationPath: "<destination path here>"
+      s3Credentials:
+        accessKeyId:
+          name: aws-creds
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: aws-creds
+          key: ACCESS_SECRET_KEY
+    retentionPolicy: "30d"
