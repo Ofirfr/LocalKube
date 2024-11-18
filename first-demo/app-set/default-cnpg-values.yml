@@ -26,12 +26,12 @@ spec:
 
   backup:
     barmanObjectStore:
-      destinationPath: "<destination path here>"
+      destinationPath: "s3://dba-cnpg-backups@http://minio.minio-tenant.svc.cluster.local:80"
       s3Credentials:
         accessKeyId:
-          name: aws-creds
+          name: minio-access-keys
           key: ACCESS_KEY_ID
         secretAccessKey:
-          name: aws-creds
+          name: minio-access-keys
           key: ACCESS_SECRET_KEY
     retentionPolicy: "30d"
