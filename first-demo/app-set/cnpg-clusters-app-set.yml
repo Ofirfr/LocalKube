@@ -37,11 +37,11 @@ spec:
               - name: metadata.name
                 value: "{{ .dba.metadata.name }}"
               - name: metadata.namespace
-                value: "{{ .dba.metadata.namespace }}"
+                value: "dba-cnpg"
             releaseName: "{{ .dba.metadata.name }}-cnpg-cluster"
       destination:
         server: https://kubernetes.default.svc
-        namespace: "{{ .dba.metadata.namespace }}"
+        namespace: "dba-cnpg"
       syncPolicy:
         automated:
           prune: true
