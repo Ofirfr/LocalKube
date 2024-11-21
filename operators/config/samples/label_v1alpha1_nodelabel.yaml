@@ -1,0 +1,9 @@
+apiVersion: label.ofir.king/v1alpha1
+kind: NodeLabel
+metadata:
+  labels:
+    app.kubernetes.io/name: operators
+    app.kubernetes.io/managed-by: kustomize
+  name: nodelabel-sample
+spec:
+  # TODO(user): Add fields here
