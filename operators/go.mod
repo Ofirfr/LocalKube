@@ -1,4 +1,4 @@
-module github.com/ofirfr/LocalKube
+module github.com/ofirfr/LocalKube/operators
 
 go 1.22.0
 
