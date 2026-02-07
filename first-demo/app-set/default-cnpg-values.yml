@@ -14,15 +14,19 @@ spec:
       cpu: "100m"
 
   affinity:
+    # This means that the pods of the same cluster will attempt to be scheduled on different nodes - for better HA
     enablePodAntiAffinity: true
     topologyKey: kubernetes.io/hostname
     podAntiAffinityType: preferred
-    nodeSelector:
-      node-role.kubernetes.io/postgres: ""
-    tolerations:
-    - key: node-role.kubernetes.io/postgres
-      operator: Exists
-      effect: NoSchedule
+    # This makes sure the pod is only scheduled on nodes that are marked as dedicated for postgres
+    # nodeSelector:
+    #   node-role.kubernetes.io/postgres: ""
+    # This is a toleration - because each postgres node has a taint to reject pods that are not postgres
+    # This way only pods that are tolerating that taint (that means - are postgres), will be able to schedule on that node
+    # tolerations:
+    # - key: node-role.kubernetes.io/postgres
+    #   operator: Exists
+    #   effect: NoSchedule
 
   backup:
     barmanObjectStore:
