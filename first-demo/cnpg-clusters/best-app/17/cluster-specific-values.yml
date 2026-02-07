@@ -1,20 +1,20 @@
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:16.4
   instances: 1
-  bootstrap:
-    initdb:
-      import:
-        type: monolith
-        databases:
-          - app
-        source:
-          externalCluster: best-app-pdb-14
-  externalClusters:
-  - name: best-app-pdb-14
-    connectionParameters:
-      host: best-app-pdb-14-rw
-      user: postgres
-      dbname: app
-    password:
-      name: best-app-pdb-14-superuser
-      key: password
+  # bootstrap:
+  #   initdb:
+  #     import:
+  #       type: monolith
+  #       databases:
+  #         - app
+  #       source:
+  #         externalCluster: best-app-pdb-14
+  # externalClusters:
+  # - name: best-app-pdb-14
+  #   connectionParameters:
+  #     host: best-app-pdb-14-rw
+  #     user: postgres
+  #     dbname: app
+  #   password:
+  #     name: best-app-pdb-14-superuser
+  #     key: password
